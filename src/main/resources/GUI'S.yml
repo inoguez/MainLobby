@@ -1,0 +1,107 @@
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#/////////////////////////////////////////////////  🅲🆃 🅶🆄🅸❜🆂  ////////////////////////////////////////////////////////
+#//////////////////////////////////////// ｐｏｗｅｒｅｄ ｂｙ ２ＧｒａｍｓＩｎ  //////////////////////////////////////////////
+#/////////////////////////////////////////    𝕯𝖔 𝖓𝖔𝖙 𝖗𝖊𝖒𝖔𝖛𝖊 𝖙𝖍𝖎𝖘 𝖒𝖆𝖗𝖐    //////////////////////////////////////////////////
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# effects types: SPEED, SLOW, FAST_DIGGING, SLOW_DIGGING, INCREASE_DAMAGE, HEAL, HARM, JUMP, CONFUSION, REGENERATION,
+# DAMAGE_RESISTANCE, FIRE_RESISTANCE, WATER_BREATHING, INVISIBILITY, BLINDNESS, NIGHT_VISION, HUNGER, WEAKNESS, POISON,
+# WITHER, HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, UNLUCK, SLOW_FALLING, CONDUIT_POWER,
+# DOLPHINS_GRACE, BAD_OMEN, HERO_OF_THE_VILLAGE
+#
+# Use -1 on slot of Gui keys if you want to hide the inventory from the inventory players
+#
+# Actions:
+# [BUNGEE] serverName:port (Send the player to a bungee sv)
+# [COMMAND] help (The player executes the command)
+# [CLOSE] (Close current inventory)
+# [GUI] Selector (Open a gui for the GUI config)
+#
+# More info about Materials and PotionEffectType in:
+# Material = https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# PotionEffectType = https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+#
+# Placeholder API support on lore and title config
+reload:
+  message: "&f[&8Craft&7-&cTorch&f] Gui Reloaded"
+Effects:
+  type:
+    - 'SPEED'
+  enable: true
+Launchpad:
+  enable: true
+  top-block: STONE_PRESSURE_PLATE
+  under-block: REDSTONE_BLOCK
+Anti-Void-Death:
+  enable: true
+  cords_to_tp: "0.5,68,0.5"
+# Gui's
+GUI:
+  Selector:
+    title: "§cGame Selector"
+    material: NETHER_STAR
+    lore:
+      - "Server selector"
+    slot: 4
+    size: 27
+    material_fill: GRAY_STAINED_GLASS_PANE
+    Items:
+      Survival:
+        title: "§aSurvival 1.17.x"
+        lore:
+          - "§7Survival server"
+        material: GRASS_BLOCK
+        slot: 10
+        action: "[BUNGEE] Survival:25563"
+      Command:
+        title: "§aHelp"
+        lore:
+          - "§7Help Command"
+        material: TORCH
+        slot: 11
+        action: "[COMMAND] help"
+      Perfil:
+        title: "§9Profile"
+        lore:
+          - "§7Profile %player_name%"
+          - "§5Time Played %cttimeplayed_getplayertime%"
+          - "§aClic to go Gui's Inventory"
+          - "§cLore4"
+          - "§6Lore5"
+          - "§8Lore6"
+          - "§bLore7"
+          - "§2Lore8"
+        material: ZOMBIE_HEAD
+        slot: 12
+        action: "[GUI] Guis"
+  Guis:
+    title: "§9Gui's"
+    material: ZOMBIE_HEAD
+    lore:
+      - "List of Gui's"
+    slot: 5
+    size: 27
+    material_fill: GRAY_STAINED_GLASS_PANE
+    Items:
+      Shop:
+        title: "§aShop"
+        lore:
+          - "§7Open Shop"
+        material: BLUE_SHULKER_BOX
+        slot: 10
+        action: "[GUI] Shop"
+  Shop:
+    title: "§cShop"
+    material: BLUE_SHULKER_BOX
+    lore:
+      - "Shop for players"
+    slot: -1
+    size: 27
+    material_fill: GRAY_STAINED_GLASS_PANE
+    Items:
+      DiamondSword:
+        title: "§aDiamond Sword"
+        lore:
+          - "§5 $3,000"
+        material: DIAMOND_SWORD
+        slot: 10
+        action: "[CLOSE]"

@@ -1,0 +1,10 @@
+name: CTGui
+version: '${project.version}'
+main: org.crafttorch.Handler
+api-version: 1.13
+authors: [ 2GramsIn ]
+description: Craft Torch Gui for all servers
+softdepend: [ PlaceholderAPI ]
+commands:
+  ctgui:
+    description: Command for reload config
