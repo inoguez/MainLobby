@@ -27,11 +27,12 @@ public final class Handler extends JavaPlugin {
         instance = this;
         createCustomConfig();
         // Plugin startup logic
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "CT.GUI STARTED");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[HubGS] Started");
         getServer().getPluginManager().registerEvents(new Events(), this);
-        Objects.requireNonNull(getCommand("ctgui")).setExecutor(new Commands());
+        Objects.requireNonNull(getCommand("HubGS")).setExecutor(new Commands());
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getPluginManager().registerEvents(new LaunchPad(this),this);
+        new Metrics(this,12844);
     }
 
     @Override
@@ -70,13 +71,15 @@ public final class Handler extends JavaPlugin {
                 player.sendPluginMessage(getInstance(), "BungeeCord", b.toByteArray());
                 b.close();
                 out.close();
-                Gui.msg(player, "§7Enviando a: " + "[§4" + server + "§7]");
+                String msg = format(getInstance().getCustomConfig().getString("SendingPlayerToSvMessage.success"));
+                Gui.msg(player, msg + " §7[§4" + server + "§7]");
             } catch (Exception e) {
-                player.sendMessage(ChatColor.RED + "Error when trying to connect to " + server);
+                e.printStackTrace();
             }
             //player.sendPluginMessage(Handler.getInstance(), "BungeeCord", b.toByteArray());
         }else{
-            Gui.msg(player, "§7Servidor desconectado: " + "[§4" + server + "§7]");
+            String msg = format(getInstance().getCustomConfig().getString("SendingPlayerToSvMessage.failed"));
+            Gui.msg(player, msg + " §7[§4" + server + "§7]");
         }
     }
 
@@ -101,5 +104,9 @@ public final class Handler extends JavaPlugin {
 
     public static Handler getInstance() {
         return instance;
+    }
+
+    public static String format(String text) {
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }

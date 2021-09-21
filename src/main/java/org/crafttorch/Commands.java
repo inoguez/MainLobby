@@ -11,20 +11,15 @@ import java.util.Objects;
 public class Commands implements CommandExecutor {
     Handler plug = Handler.getInstance();
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, String label, String[] args){
-        if (label.equalsIgnoreCase("ctgui")){
-            if (!sender.hasPermission("ctgui.reload")){
-                sender.sendMessage(ChatColor.RED + "No puedes usar este comando");
-                return true;
-            }
+        if (label.equalsIgnoreCase("HubGS")){
             if (args.length == 0){
-                sender.sendMessage(ChatColor.RED + "Uso: /ctgui reload");
-                return true;
+                return false;
             }
             if (args[0].equalsIgnoreCase("reload")){
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        Objects.requireNonNull(plug.getCustomConfig().getString("reload.message"))));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plug.getCustomConfig().getString("reload.message"))));
+                plug.createCustomConfig();
+                return true;
             }
-            plug.createCustomConfig();
         }
         return false;
     }

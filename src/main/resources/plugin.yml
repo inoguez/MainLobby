@@ -1,4 +1,4 @@
-name: CTGui
+name: HubGSelector
 version: '${project.version}'
 main: org.crafttorch.Handler
 api-version: 1.13
@@ -6,5 +6,8 @@ authors: [ 2GramsIn ]
 description: Craft Torch Gui for all servers
 softdepend: [ PlaceholderAPI ]
 commands:
-  ctgui:
+  HubGS:
+    usage: /<command> reload
     description: Command for reload config
+    permission: hubgs.reload
+    permission-message: Don't have permission

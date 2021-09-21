@@ -34,6 +34,9 @@ Launchpad:
 Anti-Void-Death:
   enable: true
   cords_to_tp: "0.5,68,0.5"
+SendingPlayerToSvMessage:
+  success: '&7[&6HubGS&7] &7Sending to:'
+  failed: '&7[&6HubGS&7] &7Unknown server:'
 # Gui's
 GUI:
   Selector:
