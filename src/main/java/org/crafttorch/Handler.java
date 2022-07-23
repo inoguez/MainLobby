@@ -27,9 +27,9 @@ public final class Handler extends JavaPlugin {
         instance = this;
         createCustomConfig();
         // Plugin startup logic
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[HubGS] Started");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[MainLobby] Started");
         getServer().getPluginManager().registerEvents(new Events(), this);
-        Objects.requireNonNull(getCommand("HubGS")).setExecutor(new Commands());
+        Objects.requireNonNull(getCommand("MainLobby")).setExecutor(new Commands());
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getPluginManager().registerEvents(new LaunchPad(this),this);
         new Metrics(this,12844);

@@ -1,7 +1,6 @@
 package org.crafttorch;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,6 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -77,19 +77,11 @@ public class Events implements Listener {
         }
     }
 
-
-    public List<String> getPlaceHolders(Player player, List<String> strings){
-        return PlaceholderAPI.setPlaceholders(player, strings);
-    }
-
-    public String getPlaceHolder(Player player, String string){
-        return PlaceholderAPI.setPlaceholders(player, string);
-    }
     public void refreshAndOpenInv(Player player , String inv){
         UUID id = player.getUniqueId();
         Objects.requireNonNull(plug.getCustomConfig().getConfigurationSection("GUI." + inv + ".Items")).getKeys(false).forEach(keyI ->{
-            String titleItem = getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + inv + ".Items." + keyI + ".title"));
-            List<String> loreItemS = getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + inv + ".Items." + keyI + ".lore"));
+            String titleItem = getItemTitles(player, inv, keyI); //getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + inv + ".Items." + keyI + ".title"));
+            List<String> loreItemS = getItemLores(player, inv, keyI); //getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + inv + ".Items." + keyI + ".lore"));
             String matItemS = plug.getCustomConfig().getString("GUI." + inv + ".Items." + keyI + ".material");
             int slotItemS = plug.getCustomConfig().getInt("GUI." + inv + ".Items." + keyI + ".slot");
 
@@ -108,7 +100,7 @@ public class Events implements Listener {
         if (getConfigForGUI == null) return;
 
         getConfigForGUI.getKeys(false).forEach(key ->{
-            String titleHolder = getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + key + ".title"));
+            String titleHolder = getSelectorTitle(player, key);//getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + key + ".title"));
             if (!getPlayerInvHM().get(id).containsKey(key)){
                 int size = plug.getCustomConfig().getInt("GUI." + key + ".size");
                 Gui Cinv = new Gui(size, titleHolder);
@@ -125,11 +117,11 @@ public class Events implements Listener {
     public void itemSelectorCreator(Player player){
         Inventory invPlayer= player.getInventory();
         getConfigForGUI.getKeys(false).forEach(key -> {
-            String titleHolder = getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + key + ".title"));
+            String titleHolder = getSelectorTitle(player, key); //getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + key + ".title"));
             int slot = plug.getCustomConfig().getInt("GUI." + key + ".slot");
             if (slot != -1) {
                 String mat = plug.getCustomConfig().getString("GUI." + key + ".material");
-                List<String> loreHolders = getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + key + ".lore"));
+                List<String> loreHolders = getSelectorLore(player, key); //getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + key + ".lore"));
                 ItemStack item = Gui.createItem(titleHolder, Material.valueOf(mat), loreHolders);
                 invPlayer.setItem(slot, item);
                 getItemSelector().put(key, item);
@@ -174,8 +166,8 @@ public class Events implements Listener {
                     if (e.getCurrentItem().equals( getPlayerSelecHM().get(id).get(keyI))) {
                         String action = plug.getCustomConfig().getString("GUI." + key + ".Items." + keyI + ".action");
 
-                        assert StringUtils.substringBetween(action, "[", "]") != null;
-                        String actionName = StringUtils.substringBetween(action, "[", "]").toUpperCase();
+                        assert action != null;
+                        String actionName = action.substring(action.indexOf("[") + 1, action.indexOf("]"));
                         switch (actionName) {
                             case "BUNGEE":
                                 String sv = action.contains(" ") ? action.split(" ", 2)[1] : "";
@@ -249,4 +241,60 @@ public class Events implements Listener {
             }
         }
     }
+
+    //PlaceHolders API conection
+    public List<String> getPlaceHolders(Player player, List<String> strings){
+        return PlaceholderAPI.setPlaceholders(player, strings);
+    }
+
+    public String getPlaceHolder(Player player, String string){
+        return PlaceholderAPI.setPlaceholders(player, string);
+    }
+    //GLOBAL PLACEHOLDERS RETURN METHODS
+
+    //Selector Items
+    public String getSelectorTitle(Player player, String key){
+        Plugin a = plug.getServer().getPluginManager().getPlugin("PlaceholderAPI");
+        String t;
+        if (a != null){
+            t = getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + key + ".title"));
+            return t;
+        }
+        t = plug.getCustomConfig().getString("GUI." + key + ".title");
+        return t;
+    }
+
+    public List<String> getSelectorLore(Player player, String key){
+        Plugin a = plug.getServer().getPluginManager().getPlugin("PlaceholderAPI");
+        List<String> t;
+        if (a != null){
+            t = getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + key + ".lore"));
+            return t;
+        }
+        t = plug.getCustomConfig().getStringList("GUI." + key + ".lore");
+        return t;
+    }
+    //Items in gui
+    public String getItemTitles(Player player, String inv, String keyI){
+        Plugin a = plug.getServer().getPluginManager().getPlugin("PlaceholderAPI");
+        String t;
+        if (a != null){
+            t = getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + inv + ".Items." + keyI + ".title"));
+            return t;
+        }
+        t = plug.getCustomConfig().getString("GUI." + inv + ".Items." + keyI + ".title");
+        return t;
+    }
+
+    public List<String> getItemLores(Player player, String inv, String keyI){
+        Plugin a = plug.getServer().getPluginManager().getPlugin("PlaceholderAPI");
+        List<String> t;
+        if (a != null){
+            t = getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + inv + ".Items." + keyI + ".lore"));
+            return t;
+        }
+        t = plug.getCustomConfig().getStringList("GUI." + inv + ".Items." + keyI + ".lore");
+        return t;
+    }
 }
+

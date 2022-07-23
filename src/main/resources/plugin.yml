@@ -1,13 +1,13 @@
-name: HubGSelector
+name: MainLobby
 version: '${project.version}'
 main: org.crafttorch.Handler
-api-version: 1.13
+api-version: 1.19
 authors: [ 2GramsIn ]
-description: Craft Torch Gui for all servers
+description: Torch Lobby free for all
 softdepend: [ PlaceholderAPI ]
 commands:
-  HubGS:
+  MainLobby:
     usage: /<command> reload
     description: Command for reload config
-    permission: hubgs.reload
+    permission: MainLobby.reload
     permission-message: Don't have permission

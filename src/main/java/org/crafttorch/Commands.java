@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Commands implements CommandExecutor {
     Handler plug = Handler.getInstance();
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, String label, String[] args){
-        if (label.equalsIgnoreCase("HubGS")){
+        if (label.equalsIgnoreCase("MainLobby")){
             if (args.length == 0){
                 return false;
             }

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.crafttorch</groupId>
-    <artifactId>HubGSelector</artifactId>
-    <version>3.0.1</version>
+    <artifactId>MainLobby</artifactId>
+    <version>4.0.0</version>
     <packaging>jar</packaging>
 
-    <name>HubGSelector</name>
+    <name>MainLobby</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -48,7 +48,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
                 <configuration>
-                    <outputDirectory>C:\Users\IanB0\Desktop\General\MCResources\Craft-Torch\Craft-Torch\servers\1_Hub\plugins</outputDirectory>
+                    <outputDirectory>C:\Users\IanB0\Desktop\Torch\servers\HUB\plugins</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
@@ -62,7 +62,7 @@
 
     <repositories>
         <repository>
-            <id>spigotmc-repo</id>
+            <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.19-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
