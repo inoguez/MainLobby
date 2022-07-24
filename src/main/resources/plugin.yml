@@ -1,7 +1,7 @@
 name: MainLobby
 version: '${project.version}'
 main: org.crafttorch.Handler
-api-version: 1.19
+api-version: 1.14
 authors: [ 2GramsIn ]
 description: Torch Lobby free for all
 softdepend: [ PlaceholderAPI ]
@@ -9,5 +9,10 @@ commands:
   MainLobby:
     usage: /<command> reload
     description: Command for reload config
-    permission: MainLobby.reload
+    permission: mainlobby.reload
+    permission-message: Don't have permission
+  shutdown:
+    usage: /<command>
+    description: shutdowns the server
+    permission: mainlobby.shutdown
     permission-message: Don't have permission

@@ -23,6 +23,10 @@
 # Placeholder API support on lore and title config
 reload:
   message: "&f[&cMainLobby&f] Gui Reloaded"
+Player:
+  damage: false
+  hunger: false
+leaves-Decay: false
 Effects:
   type:
     - 'SPEED'
@@ -37,10 +41,14 @@ Anti-Void-Death:
 SendingPlayerToSvMessage:
   success: '&7[&6MainLobby&7] &7Sending to:'
   failed: '&7[&6MainLobby&7] &7Unknown server:'
+Shutdown:
+  targetServer: "HUB"
+  port: 25565
+  kickReason: "Server closed, you returned to the lobby"
 # Gui's
 GUI:
   Selector:
-    title: "§cGame Selector"
+    title: "&cGame Selector"
     material: NETHER_STAR
     lore:
       - "Server selector"
@@ -49,35 +57,35 @@ GUI:
     material_fill: GRAY_STAINED_GLASS_PANE
     Items:
       Survival:
-        title: "§aSurvival 1.17.x"
+        title: "&aSurvival 1.17.x"
         lore:
-          - "§7Survival server"
+          - "&7Survival server"
         material: GRASS_BLOCK
         slot: 10
         action: "[BUNGEE] Survival:25563"
       Command:
-        title: "§aHelp"
+        title: "&aHelp"
         lore:
-          - "§7Help Command"
+          - "&7Help Command"
         material: TORCH
         slot: 11
         action: "[COMMAND] help"
       Perfil:
-        title: "§9Profile"
+        title: "&9Profile"
         lore:
-          - "§7Profile %player_name%"
-          - "§5Time Played %cttimeplayed_getplayertime%"
-          - "§aClic to go Gui's Inventory"
-          - "§cLore4"
-          - "§6Lore5"
-          - "§8Lore6"
-          - "§bLore7"
-          - "§2Lore8"
+          - "&7Profile %player_name%"
+          - "&5Time Played %cttimeplayed_getplayertime%"
+          - "&aClic to go Gui's Inventory"
+          - "&cLore4"
+          - "&6Lore5"
+          - "&8Lore6"
+          - "&bLore7"
+          - "&2Lore8"
         material: ZOMBIE_HEAD
         slot: 12
         action: "[GUI] Guis"
   Guis:
-    title: "§9Gui's"
+    title: "&9Gui's"
     material: ZOMBIE_HEAD
     lore:
       - "List of Gui's"
@@ -86,14 +94,14 @@ GUI:
     material_fill: GRAY_STAINED_GLASS_PANE
     Items:
       Shop:
-        title: "§aShop"
+        title: "&aShop"
         lore:
-          - "§7Open Shop"
+          - "&7Open Shop"
         material: BLUE_SHULKER_BOX
         slot: 10
         action: "[GUI] Shop"
   Shop:
-    title: "§cShop"
+    title: "&cShop"
     material: BLUE_SHULKER_BOX
     lore:
       - "Shop for players"
@@ -102,9 +110,9 @@ GUI:
     material_fill: GRAY_STAINED_GLASS_PANE
     Items:
       DiamondSword:
-        title: "§aDiamond Sword"
+        title: "&aDiamond Sword"
         lore:
-          - "§5 $3,000"
+          - "&5 $3,000"
         material: DIAMOND_SWORD
         slot: 10
         action: "[CLOSE]"

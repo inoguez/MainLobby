@@ -9,7 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class Commands implements CommandExecutor {
-    Handler plug = Handler.getInstance();
+    Handler plug;
+    KickHub a;
+    public Commands(Handler plug) {
+        this.plug = plug;
+        this.a = new KickHub(plug);
+    }
+
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, String label, String[] args){
         if (label.equalsIgnoreCase("MainLobby")){
             if (args.length == 0){
@@ -20,6 +26,9 @@ public class Commands implements CommandExecutor {
                 plug.createCustomConfig();
                 return true;
             }
+        }
+        if (label.equalsIgnoreCase("shutdown")){
+            a.kickShutdown();
         }
         return false;
     }

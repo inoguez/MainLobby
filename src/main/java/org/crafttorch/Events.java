@@ -1,7 +1,7 @@
 package org.crafttorch;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -22,8 +25,13 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 
 public class Events implements Listener {
-    Handler plug = Handler.getInstance();
-    ConfigurationSection getConfigForGUI = plug.getCustomConfig().getConfigurationSection("GUI");
+    Handler plug;
+    ConfigurationSection getConfigForGUI;
+
+    public Events(Handler plug) {
+        this.plug = plug;
+        this.getConfigForGUI = plug.getCustomConfig().getConfigurationSection("GUI");
+    }
 
     private final HashMap<String, Inventory> invs = new HashMap<>();
     private final HashMap<String, ItemStack> itemSelector = new HashMap<>();
@@ -86,7 +94,7 @@ public class Events implements Listener {
             int slotItemS = plug.getCustomConfig().getInt("GUI." + inv + ".Items." + keyI + ".slot");
 
             Inventory inventory = getPlayerInvHM().get(id).get(inv);
-            ItemStack itemS = Gui.createItem(titleItem, Material.valueOf(matItemS), loreItemS);
+            ItemStack itemS = plug.getItems().createItem(titleItem, Material.valueOf(matItemS), loreItemS);
             inventory.setItem(slotItemS, itemS );
             getPlayerSelecHM().get(id).put(keyI,itemS);
         });
@@ -103,7 +111,7 @@ public class Events implements Listener {
             String titleHolder = getSelectorTitle(player, key);//getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + key + ".title"));
             if (!getPlayerInvHM().get(id).containsKey(key)){
                 int size = plug.getCustomConfig().getInt("GUI." + key + ".size");
-                Gui Cinv = new Gui(size, titleHolder);
+                Gui Cinv = new Gui(plug,size, titleHolder);
                 getInvs().put(key, Cinv.getInventory());
             }
         });
@@ -122,7 +130,7 @@ public class Events implements Listener {
             if (slot != -1) {
                 String mat = plug.getCustomConfig().getString("GUI." + key + ".material");
                 List<String> loreHolders = getSelectorLore(player, key); //getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + key + ".lore"));
-                ItemStack item = Gui.createItem(titleHolder, Material.valueOf(mat), loreHolders);
+                ItemStack item = plug.getItems().createItem(titleHolder, Material.valueOf(mat), loreHolders);
                 invPlayer.setItem(slot, item);
                 getItemSelector().put(key, item);
             }
@@ -190,7 +198,7 @@ public class Events implements Listener {
                                     }
                                     refreshAndOpenInv(player, gui);
                                 } else {
-                                    Gui.msg(player, "&cInventory dont exist");
+                                    plug.msg(player, "&cInventory dont exist");
                                 }
                                 break;
                         }
@@ -242,6 +250,32 @@ public class Events implements Listener {
         }
     }
 
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent e) {
+        boolean a = plug.getCustomConfig().getBoolean("Player.damage");
+        if(!a){
+            if (e.getEntity() instanceof Player){
+                e.setCancelled(true);
+            }
+        }
+
+    }
+    @EventHandler
+    public void onHungerDeplete(FoodLevelChangeEvent e) {
+        boolean a = plug.getCustomConfig().getBoolean("Player.hunger");
+        if(!a) {
+            e.setCancelled(true);
+            e.getEntity().setFoodLevel(20);
+        }
+    }
+
+    @EventHandler
+    public void leavesDecay(LeavesDecayEvent e){
+        boolean a = plug.getCustomConfig().getBoolean("leaves-Decay");
+        if(!a) {
+            e.setCancelled(true);
+        }
+    }
     //PlaceHolders API conection
     public List<String> getPlaceHolders(Player player, List<String> strings){
         return PlaceholderAPI.setPlaceholders(player, strings);
