@@ -115,7 +115,7 @@ public class Events implements Listener {
             if (!getPlayerInvHM().get(id).containsKey(key)){
                 int size = plug.getGuiConfig().getInt("GUI." + key + ".size");
                 String mat = plug.getGuiConfig().getString("GUI." + key + ".material_fill");
-                Gui Cinv = new Gui(plug,size, titleHolder);
+                Gui Cinv = new Gui(size, titleHolder);
                 if(mat != null){
                     Cinv.fillInv(getConfigForGUI, mat);
                 }
