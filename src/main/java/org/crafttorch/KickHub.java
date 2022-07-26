@@ -13,9 +13,9 @@ public class KickHub {
     }
 
     public void kickAll() {
-        String svName = plug.getCustomConfig().getString("Shutdown.targetServer");
-        int port = plug.getCustomConfig().getInt("Shutdown.port");
-        String kickReason = plug.getCustomConfig().getString("Shutdown.kickReason");
+        String svName = plug.getConfig().getString("Shutdown.targetServer");
+        int port = plug.getConfig().getInt("Shutdown.port");
+        String kickReason = plug.getConfig().getString("Shutdown.kickReason");
 
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             plug.msg(p, kickReason);
