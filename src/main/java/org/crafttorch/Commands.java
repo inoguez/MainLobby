@@ -22,7 +22,7 @@ public class Commands implements CommandExecutor {
                 return false;
             }
             if (args[0].equalsIgnoreCase("reload")){
-                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plug.getCustomConfig().getString("reload.message"))));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(plug.getConfig().getString("reload.message"))));
                 plug.createCustomConfig();
                 return true;
             }
