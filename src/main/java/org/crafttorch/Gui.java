@@ -15,11 +15,9 @@ import java.util.List;
 
 
 public class Gui implements InventoryHolder {
-    private final Handler plug;
     private final Inventory inv;
 
     public Gui(Handler plug, int size, String title) {
-        this.plug = plug;
         this.inv = Bukkit.createInventory(null, size, Handler.format(title));
 
     }
