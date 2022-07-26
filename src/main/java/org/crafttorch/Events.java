@@ -29,16 +29,20 @@ public class Events implements Listener {
     Handler plug;
     ConfigurationSection getConfigForGUI;
 
+    private final HashMap<String, Inventory> invs;
+    private final HashMap<String, ItemStack> itemSelector;
+    private final HashMap<UUID, HashMap<String, Inventory> > playerInvHM;
+    private final HashMap<UUID, HashMap<String, ItemStack> > playerSelecHM;
+
     public Events(Handler plug) {
         this.plug = plug;
         this.getConfigForGUI = plug.getGuiConfig().getConfigurationSection("GUI");
+        invs = new HashMap<>();
+        itemSelector = new HashMap<>();
+        playerInvHM = new HashMap<>();
+        playerSelecHM = new HashMap<>();
     }
 
-    private final HashMap<String, Inventory> invs = new HashMap<>();
-    private final HashMap<String, ItemStack> itemSelector = new HashMap<>();
-
-    private final HashMap<UUID, HashMap<String, Inventory> > playerInvHM = new HashMap<>();
-    private final HashMap<UUID, HashMap<String, ItemStack> > playerSelecHM = new HashMap<>();
 
     public HashMap<UUID, HashMap<String, Inventory>> getPlayerInvHM() {
         return playerInvHM;
@@ -205,6 +209,8 @@ public class Events implements Listener {
                                     plug.msg(player, "&cInventory dont exist");
                                 }
                                 break;
+                            default:
+                                break;
                         }
                     }
                 });
@@ -266,28 +272,24 @@ public class Events implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
         boolean a = plug.getConfig().getBoolean("Player.damage");
-        if(!a){
-            if (e.getEntity() instanceof Player){
-                e.setCancelled(true);
-            }
+        if(a) return;
+        if (e.getEntity() instanceof Player){
+            e.setCancelled(true);
         }
-
     }
     @EventHandler
     public void onHungerDeplete(FoodLevelChangeEvent e) {
         boolean a = plug.getConfig().getBoolean("Player.hunger");
-        if(!a) {
-            e.setCancelled(true);
-            e.getEntity().setFoodLevel(20);
-        }
+        if(a) return;
+        e.setCancelled(true);
+        e.getEntity().setFoodLevel(20);
     }
 
     @EventHandler
     public void leavesDecay(LeavesDecayEvent e){
         boolean a = plug.getGuiConfig().getBoolean("leaves-Decay");
-        if(!a) {
-            e.setCancelled(true);
-        }
+        if(a) return;
+        e.setCancelled(true);
     }
     //PlaceHolders API conection
     public List<String> getPlaceHolders(Player player, List<String> strings){
