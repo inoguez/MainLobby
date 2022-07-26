@@ -15,7 +15,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -162,61 +161,63 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void inventoryClick (InventoryClickEvent e){
-        Player player = (Player) e.getWhoClicked();
+    public void onInventoryClick(final InventoryClickEvent e) {
+        final Player player = (Player) e.getWhoClicked();
         UUID id = player.getUniqueId();
-        if(e.getClickedInventory() == null) return;
         getConfigForGUI.getKeys(false).forEach(key -> {
-            if (e.getView().getTopInventory() == getPlayerInvHM().get(id).get(key) && e.getView().getBottomInventory().getType() == InventoryType.PLAYER){
-                e.setCancelled(true);
-            }
-            if (Objects.equals(e.getCurrentItem(), getPlayerSelecHM().get(id).get(key))) {
-                e.setCancelled(true);
-            }
-            if(e.getClickedInventory() == getPlayerInvHM().get(id).get(key)) {
-                if(e.getCurrentItem() == null
-                        || e.getCurrentItem().getType() == Material.AIR){
-                    return;
-                }
-                Objects.requireNonNull(plug.getGuiConfig().getConfigurationSection("GUI." + key + ".Items")).getKeys(false).forEach(keyI ->{
-                    if (e.getCurrentItem().equals( getPlayerSelecHM().get(id).get(keyI))) {
-                        String action = plug.getGuiConfig().getString("GUI." + key + ".Items." + keyI + ".action");
+            boolean isGui = e.getInventory().equals(getPlayerInvHM().get(id).get(key)) ;
+            final ItemStack clickedItem = e.getCurrentItem();
+            ItemStack selector = getPlayerSelecHM().get(id).get(key);
 
-                        assert action != null;
-                        String actionName = action.substring(action.indexOf("[") + 1, action.indexOf("]"));
-                        switch (actionName) {
-                            case "BUNGEE":
-                                String sv = action.contains(" ") ? action.split(" ", 2)[1] : "";
-                                String[] parts = sv.split(":");
-                                player.closeInventory();
-                                Handler.sendPlayerToServer(player, parts[0], Integer.parseInt(parts[1]));
-                                break;
-                            case "COMMAND":
-                                String cm = action.contains(" ") ? action.split(" ", 2)[1] : "";
-                                player.performCommand(cm);
-                                break;
-                            case "CLOSE":
-                                player.closeInventory();
-                                break;
-                            case "GUI":
-                                String gui = action.contains(" ") ? action.split(" ", 2)[1] : "";
-                                if (getPlayerInvHM().get(id).get(gui) != null) {
-                                    if (player.getOpenInventory() instanceof Inventory) {
-                                        player.closeInventory();
-                                    }
-                                    refreshAndOpenInv(player, gui);
-                                } else {
-                                    plug.msg(player, "&cInventory dont exist");
-                                }
-                                break;
-                            default:
-                                break;
+            if (Objects.equals(clickedItem, selector)){
+                e.setCancelled(true);
+            }
+            if (!isGui || clickedItem == null || clickedItem.getType().isAir()) return;
+            e.setCancelled(true);
+
+            inventoryActions(player, key, clickedItem);
+        });
+    }
+
+    public void inventoryActions(Player player, String Gui, ItemStack clickedItem){
+        UUID id = player.getUniqueId();
+        ConfigurationSection section = plug.getGuiConfig().getConfigurationSection("GUI." + Gui + ".Items");
+        assert section != null;
+        section.getKeys(false).forEach(keyI -> {
+            if (Objects.equals(clickedItem, getPlayerSelecHM().get(id).get(keyI))) {
+                String action = section.getString(keyI + ".action");
+                assert action != null;
+                String actionName = action.substring(action.indexOf("[") + 1, action.indexOf("]"));
+
+                switch (actionName) {
+                    case "BUNGEE":
+                        String sv = action.contains(" ") ? action.split(" ", 2)[1] : "";
+                        String[] parts = sv.split(":");
+                        player.closeInventory();
+                        Handler.sendPlayerToServer(player, parts[0], Integer.parseInt(parts[1]));
+                        break;
+                    case "COMMAND":
+                        String cm = action.contains(" ") ? action.split(" ", 2)[1] : "";
+                        player.performCommand(cm);
+                        break;
+                    case "CLOSE":
+                        player.closeInventory();
+                        break;
+                    case "GUI":
+                        String gui = action.contains(" ") ? action.split(" ", 2)[1] : "";
+                        if (getPlayerInvHM().get(id).get(gui) == null) {plug.msg(player, "&cInventory dont exist");return;}
+                        if (player.getOpenInventory() instanceof Inventory) {
+                            player.closeInventory();
                         }
-                    }
-                });
+                        refreshAndOpenInv(player, gui);
+                        break;
+                    default:
+                        break;
+                }
             }
         });
     }
+
     @EventHandler
     public void onPlayerPlace (BlockPlaceEvent e){
         UUID id = e.getPlayer().getUniqueId();
