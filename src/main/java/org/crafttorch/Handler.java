@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -21,8 +22,8 @@ import java.util.Objects;
 
 public final class Handler extends JavaPlugin {
     private static Handler instance;
-    private Items items;
-    private FileConfiguration customConfig;
+    private FileConfiguration guiConfig;
+    private FileConfiguration config;
 
 
     @Override
@@ -30,7 +31,6 @@ public final class Handler extends JavaPlugin {
         instance = this;
         createCustomConfig();
         // Plugin startup logic
-        items = new Items(getInstance());
         getServer().getPluginManager().registerEvents(new Events(getInstance()), getInstance());
         Objects.requireNonNull(getCommand("MainLobby")).setExecutor(new Commands(getInstance()));
         Objects.requireNonNull(getCommand("shutdown")).setExecutor(new Commands(getInstance()));
@@ -49,24 +49,41 @@ public final class Handler extends JavaPlugin {
 
 
     public void createCustomConfig() {
-        File customConfigFile = new File(getDataFolder(), "guis.yml");
-        if (!customConfigFile.exists()) {
-            boolean isDirectoryCreated = customConfigFile.getParentFile().mkdirs();
-            if (isDirectoryCreated) saveResource("guis.yml", false);
+        File guiConfigFile = new File(getDataFolder(), "guis.yml");
+        File configFile = new File(getDataFolder(), "config.yml");
+        //Create YML if dont exists
+        if (!guiConfigFile.exists()) {
+            boolean dir = guiConfigFile.getParentFile().mkdirs();
+            if (dir) {
+                saveResource("guis.yml", false);
+            }
         }
+        if (!configFile.exists()) {
+            boolean dir = configFile.getParentFile().mkdirs();
+            if (dir){
+                saveResource("config.yml", false);
+            }
 
-        customConfig= new YamlConfiguration();
+        }
+        config = new YamlConfiguration();
+        guiConfig = new YamlConfiguration();
         try {
-            customConfig.load(customConfigFile);
+            guiConfig.load(guiConfigFile);
+            config.load(configFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
     }
 
-    public FileConfiguration getCustomConfig() {
-        return this.customConfig;
+    public FileConfiguration getGuiConfig() {
+        return this.guiConfig;
     }
 
+    @NotNull
+    @Override
+    public FileConfiguration getConfig() {
+        return config;
+    }
 
     public static void sendPlayerToServer(Player player, String server, int port) {
         if (getInstance().isSvOnline(port)){
@@ -78,14 +95,14 @@ public final class Handler extends JavaPlugin {
                 player.sendPluginMessage(getInstance(), "BungeeCord", b.toByteArray());
                 b.close();
                 out.close();
-                String message = getInstance().format(getInstance().getCustomConfig().getString("SendingPlayerToSvMessage.success"));
+                String message = format(getInstance().getConfig().getString("SendingPlayerToSvMessage.success"));
                 instance.msg(player, message + " &7[&4" + server + "&7]");
             } catch (Exception e) {
                 e.printStackTrace();
             }
             //player.sendPluginMessage(Handler.getInstance(), "BungeeCord", b.toByteArray());
         }else{
-            String message = getInstance().format(getInstance().getCustomConfig().getString("SendingPlayerToSvMessage.failed"));
+            String message = format(getInstance().getConfig().getString("SendingPlayerToSvMessage.failed"));
             instance.msg(player, message + " &7[&4" + server + "&7]");
         }
     }
@@ -109,18 +126,15 @@ public final class Handler extends JavaPlugin {
     }
     */
 
-    public Items getItems() {
-        return items;
-    }
-
     public static Handler getInstance() {
         return instance;
     }
 
-    public String format(String text) {
+    public static String format(String text) {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
-    public List<String> formatList(List<String> input) {
+    public static List<String> formatList(List<String> input) {
+        if (input == null)return null;
         List<String> ret = new ArrayList<>();
         for (String line : input) ret.add(ChatColor.translateAlternateColorCodes('&', line));
         return ret;
