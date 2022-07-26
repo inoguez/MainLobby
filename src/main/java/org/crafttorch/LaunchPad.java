@@ -17,14 +17,13 @@ public class LaunchPad implements Listener {
 
     @EventHandler
     public void onPlayerWalk(PlayerMoveEvent e){
-        if(plugin.getCustomConfig().getBoolean("Launchpad.enable")){
-            Player player = e.getPlayer();
-            Location underBlock = player.getLocation();
-            underBlock.setY(underBlock.getY() - 1);
-            if(player.getLocation().getBlock().getType().equals(Material.valueOf(plugin.getCustomConfig().getString("Launchpad.top-block")))
-                    && underBlock.getBlock().getType().equals(Material.valueOf(plugin.getCustomConfig().getString("Launchpad.under-block")))){
-                player.setVelocity(player.getLocation().getDirection().multiply(2).setY(1));
-            }
+        if(!plugin.getConfig().getBoolean("Launchpad.enable")) return;
+        Player player = e.getPlayer();
+        Location underBlock = player.getLocation();
+        underBlock.setY(underBlock.getY() - 1);
+        if(player.getLocation().getBlock().getType().equals(Material.valueOf(plugin.getConfig().getString("Launchpad.top-block")))
+                && underBlock.getBlock().getType().equals(Material.valueOf(plugin.getConfig().getString("Launchpad.under-block")))){
+            player.setVelocity(player.getLocation().getDirection().multiply(2).setY(1));
         }
     }
 
