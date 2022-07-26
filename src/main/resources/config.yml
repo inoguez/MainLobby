@@ -1,0 +1,34 @@
+# effects types: SPEED, SLOW, FAST_DIGGING, SLOW_DIGGING, INCREASE_DAMAGE, HEAL, HARM, JUMP, CONFUSION, REGENERATION,
+# DAMAGE_RESISTANCE, FIRE_RESISTANCE, WATER_BREATHING, INVISIBILITY, BLINDNESS, NIGHT_VISION, HUNGER, WEAKNESS, POISON,
+# WITHER, HEALTH_BOOST, ABSORPTION, SATURATION, GLOWING, LEVITATION, LUCK, UNLUCK, SLOW_FALLING, CONDUIT_POWER,
+# DOLPHINS_GRACE, BAD_OMEN, HERO_OF_THE_VILLAGE
+#
+# More info about PotionEffectType in:
+# PotionEffectType = https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+#
+# Placeholder API support on lore and title config
+
+reload:
+  message: "&f[&cMainLobby&f] Gui Reloaded"
+Player:
+  damage: false
+  hunger: false
+leaves-Decay: false
+Effects:
+  type:
+    - 'SPEED'
+  enable: true
+Launchpad:
+  enable: true
+  top-block: STONE_PRESSURE_PLATE
+  under-block: REDSTONE_BLOCK
+Anti-Void-Death:
+  enable: true
+  cords_to_tp: "0.5,68,0.5"
+SendingPlayerToSvMessage:
+  success: '&7[&6MainLobby&7] &7Sending to:'
+  failed: '&7[&6MainLobby&7] &7Unknown server:'
+Shutdown:
+  targetServer: "HUB"
+  port: 25565
+  kickReason: "Server closed, you returned to the lobby"
