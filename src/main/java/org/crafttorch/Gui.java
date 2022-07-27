@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -16,8 +16,10 @@ import java.util.List;
 
 public class Gui implements InventoryHolder {
     private final Inventory inv;
+    protected Handler plug;
 
-    public Gui( int size, String title) {
+    public Gui(Handler plug, int size, String title) {
+        this.plug = plug;
         this.inv = Bukkit.createInventory(null, size, Handler.format(title));
     }
 
@@ -29,7 +31,7 @@ public class Gui implements InventoryHolder {
             }
         });
     }
-    public static ItemStack createItem(String name, Material mat, List<String> lore){
+    public ItemStack createItem(String name, Material mat, List<String> lore){
         ItemStack item = new ItemStack(mat, 1 );
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -39,8 +41,8 @@ public class Gui implements InventoryHolder {
         return item;
     }
 
-    public void openInventory(final HumanEntity ent) {
-        ent.openInventory(inv);
+    public void openInventory( Player ent) {
+        ent.openInventory(getInventory());
     }
 
     @Override
