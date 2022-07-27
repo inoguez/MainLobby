@@ -28,9 +28,9 @@ public class Events implements Listener {
     Handler plug;
     ConfigurationSection getConfigForGUI;
 
-    private final HashMap<String, Inventory> invs;
+    private final HashMap<String, Gui> invs;
     private final HashMap<String, ItemStack> itemSelector;
-    private final HashMap<UUID, HashMap<String, Inventory> > playerInvHM;
+    private final HashMap<UUID, HashMap<String, Gui> > playerInvHM;
     private final HashMap<UUID, HashMap<String, ItemStack> > playerSelecHM;
 
     public Events(Handler plug) {
@@ -43,7 +43,7 @@ public class Events implements Listener {
     }
 
 
-    public HashMap<UUID, HashMap<String, Inventory>> getPlayerInvHM() {
+    public HashMap<UUID, HashMap<String, Gui>> getPlayerInvHM() {
         return playerInvHM;
     }
 
@@ -51,7 +51,7 @@ public class Events implements Listener {
         return playerSelecHM;
     }
 
-    public HashMap<String, Inventory> getInvs() {
+    public HashMap<String, Gui> getInvs() {
         return invs;
     }
 
@@ -68,8 +68,8 @@ public class Events implements Listener {
         Player player = e.getPlayer();
         getPlayerInvHM().put(player.getUniqueId(), getInvs());
         getPlayerSelecHM().put(player.getUniqueId(), getItemSelector());
-        itemSelectorCreator(player);
         createGuis(player);
+        itemSelectorCreator(player);
         onPlayerJoinEffect(player);
     }
 
@@ -91,18 +91,19 @@ public class Events implements Listener {
 
     public void refreshAndOpenInv(Player player , String inv){
         UUID id = player.getUniqueId();
+        Gui gui = getPlayerInvHM().get(id).get(inv);
         Objects.requireNonNull(plug.getGuiConfig().getConfigurationSection("GUI." + inv + ".Items")).getKeys(false).forEach(keyI ->{
             String titleItem = getItemTitles(player, inv, keyI); //getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + inv + ".Items." + keyI + ".title"));
             List<String> loreItemS = getItemLores(player, inv, keyI); //getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + inv + ".Items." + keyI + ".lore"));
             String matItemS = plug.getGuiConfig().getString("GUI." + inv + ".Items." + keyI + ".material");
             int slotItemS = plug.getGuiConfig().getInt("GUI." + inv + ".Items." + keyI + ".slot");
+            Inventory inventory = gui.getInventory();
 
-            Inventory inventory = getPlayerInvHM().get(id).get(inv);
-            ItemStack itemS = Gui.createItem(titleItem, Material.valueOf(matItemS), loreItemS);
+            ItemStack itemS = gui.createItem(titleItem, Material.valueOf(matItemS), loreItemS);
             inventory.setItem(slotItemS, itemS );
             getPlayerSelecHM().get(id).put(keyI,itemS);
         });
-        player.openInventory(getPlayerInvHM().get(id).get(inv));
+        gui.openInventory(player);
     }
 
     //Inventory creation
@@ -115,33 +116,35 @@ public class Events implements Listener {
             if (!getPlayerInvHM().get(id).containsKey(key)){
                 int size = plug.getGuiConfig().getInt("GUI." + key + ".size");
                 String mat = plug.getGuiConfig().getString("GUI." + key + ".material_fill");
-                Gui Cinv = new Gui(size, titleHolder);
+                Gui Cinv = new Gui(plug, size, titleHolder);
                 if(mat != null){
                     Cinv.fillInv(getConfigForGUI, mat);
                 }
-                getInvs().put(key, Cinv.getInventory());
+                getInvs().put(key, Cinv);
             }
         });
         getPlayerInvHM().put(id, new HashMap<>(getInvs()));
-        getPlayerSelecHM().put(id, new HashMap<>(getItemSelector()));
         getInvs().clear();
-        getItemSelector().clear();
     }
 
     //Selector of inventory creation
     public void itemSelectorCreator(Player player){
         Inventory invPlayer= player.getInventory();
+        UUID id = player.getUniqueId();
         getConfigForGUI.getKeys(false).forEach(key -> {
+            Gui gui = getPlayerInvHM().get(id).get(key);
             String titleHolder = getSelectorTitle(player, key); //getPlaceHolder(player, plug.getCustomConfig().getString("GUI." + key + ".title"));
             int slot = plug.getGuiConfig().getInt("GUI." + key + ".slot");
             if (slot != -1) {
                 String mat = plug.getGuiConfig().getString("GUI." + key + ".material");
                 List<String> loreHolders = getSelectorLore(player, key); //getPlaceHolders(player, plug.getCustomConfig().getStringList("GUI." + key + ".lore"));
-                ItemStack item = Gui.createItem(titleHolder, Material.valueOf(mat), loreHolders);
+                ItemStack item = gui.createItem(titleHolder, Material.valueOf(mat), loreHolders);
                 invPlayer.setItem(slot, item);
                 getItemSelector().put(key, item);
             }
         });
+        getPlayerSelecHM().put(id, new HashMap<>(getItemSelector()));
+        getItemSelector().clear();
     }
 
 
@@ -165,7 +168,7 @@ public class Events implements Listener {
         final Player player = (Player) e.getWhoClicked();
         UUID id = player.getUniqueId();
         getConfigForGUI.getKeys(false).forEach(key -> {
-            boolean isGui = e.getInventory().equals(getPlayerInvHM().get(id).get(key)) ;
+            boolean isGui = e.getInventory().equals(getPlayerInvHM().get(id).get(key).getInventory()) ;
             final ItemStack clickedItem = e.getCurrentItem();
             ItemStack selector = getPlayerSelecHM().get(id).get(key);
 
