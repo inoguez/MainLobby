@@ -1,5 +1,6 @@
 package org.crafttorch;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,6 +25,7 @@ public final class Handler extends JavaPlugin {
     private static Handler instance;
     private FileConfiguration guiConfig;
     private FileConfiguration config;
+    private Metrics metrics;
 
 
     @Override
@@ -36,7 +38,7 @@ public final class Handler extends JavaPlugin {
         Objects.requireNonNull(getCommand("shutdown")).setExecutor(new Commands(getInstance()));
         getServer().getMessenger().registerOutgoingPluginChannel(getInstance(), "BungeeCord");
         getServer().getPluginManager().registerEvents(new LaunchPad(getInstance()),getInstance());
-        new Metrics(getInstance(),12844);
+        metrics = new Metrics(getInstance(), 15933);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[MainLobby] Started");
     }
 
