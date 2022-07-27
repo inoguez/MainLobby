@@ -25,7 +25,6 @@ public final class Handler extends JavaPlugin {
     private static Handler instance;
     private FileConfiguration guiConfig;
     private FileConfiguration config;
-    private Metrics metrics;
 
 
     @Override
@@ -38,7 +37,7 @@ public final class Handler extends JavaPlugin {
         Objects.requireNonNull(getCommand("shutdown")).setExecutor(new Commands(getInstance()));
         getServer().getMessenger().registerOutgoingPluginChannel(getInstance(), "BungeeCord");
         getServer().getPluginManager().registerEvents(new LaunchPad(getInstance()),getInstance());
-        metrics = new Metrics(getInstance(), 15933);
+        new Metrics(getInstance(), 15933);
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[MainLobby] Started");
     }
 
